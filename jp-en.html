@@ -1,0 +1,374 @@
+<html lang="en" xml:lang="en" xmlns= "http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="Content-Language" content="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Simple JP/EN flashcards</title>
+    <style>
+
+      html,
+      body {
+        background-color: #EEE;
+        font-family: monospace;
+        margin: 0;
+        padding: 0;
+      }
+
+      input,
+      button {
+        font-family: monospace;
+      }
+
+      #app {
+        margin: auto;
+        height: 100vh;
+        width: 50vw;
+          min-width: 320px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #start {
+        /* display: none; */
+        font-size: 24px;
+      }
+
+      #start #button {
+        font-size: 24px;
+      }
+
+      #content {
+        /* display: none; */
+      }
+
+      #content #jp {
+        font-size: 48px;
+        margin: 0px 0px 5px 0px;
+        text-align: center;
+        width: 100%;
+      }
+
+      #content #next {
+        display: none;
+        margin-top: 5px;
+      }
+
+      #content #note {
+        margin-top: 10px;
+        font-size: 36px;
+        text-align: center;
+      }
+
+      #options {
+        display: flex;
+        justify-content: space-evenly;
+        width: 100%;
+      }
+
+      .option {
+        border: 1px solid #000;
+        font-size: 22px;
+        text-align: center;
+        padding: 5px 0px;
+        margin: 5px;
+        width: 80px;
+      }
+
+      .option:hover {
+        background-color: grey;
+        cursor: pointer;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div id="app">
+      <div id="start">
+        <h3>JP to EN</h3>
+        <input name="alphabet" type="radio" value="hiragana" disabled>
+        <label onclick="alert('Hiragana coming soon! ^__^')">hiragana</label>
+        <input name="alphabet" type="radio" value="katakana" checked>
+        <label>katakana</label>
+        <!-- hacky way to space but whatever... -->
+        <br />
+        <br />
+        <button id="button">start</button>
+        <br />
+        <br />
+        <a target="new" href="https://www.nhk.or.jp/lesson/en/letters/katakana.html">katakana chart</a>
+        <br />
+        <a target="new" href="https://www.nhk.or.jp/lesson/en/letters/hiragana.html">hiragana chart</a>
+      </div>
+
+      <div id="content">
+        <div id="jp"></div>
+        <div id="options"></div>
+        <div id="note"></div>
+        <button id="next">next</button>
+      </div>
+    </div>
+
+  </body>
+
+  <script>
+
+    const ALPHABETS = {
+      'katakana': {
+        'ア': 'a',
+        'イ': 'i',
+        'ウ': 'u',
+        'エ': 'e',
+        'オ': 'o',
+        'カ': 'ka',
+        'キ': 'ki',
+        'ク': 'ku',
+        'ケ': 'ke',
+        'コ': 'ko',
+        'ガ': 'ga',
+        'ギ': 'gi',
+        'グ': 'gu',
+        'ゲ': 'ge',
+        'ゴ': 'go',
+        'サ': 'sa',
+        'シ': 'shi',
+        'ス': 'su',
+        'セ': 'se',
+        'ソ': 'so',
+        'ザ': 'za',
+        'ジ': 'zi/ji',
+        'ズ': 'zu',
+        'ゼ': 'ze',
+        'ゾ': 'zo',
+        'タ': 'ta',
+        'チ': 'ti/chi',
+        'ツ': 'tsu/tu',
+        'テ': 'te',
+        'ト': 'to',
+        'ダ': 'da',
+        'ヂ': 'di/ji',
+        'ヅ': 'du/zu',
+        'デ': 'de',
+        'ド': 'do',
+        'ナ': 'na',
+        'ニ': 'ni',
+        'ヌ': 'nu',
+        'ネ': 'ne',
+        'ノ': 'no',
+        'ハ': 'ha',
+        'ヒ': 'hi',
+        'フ': 'fu',
+        'ヘ': 'he',
+        'ホ': 'ho',
+        'バ': 'ba',
+        'ビ': 'bi',
+        'ブ': 'bu',
+        'ベ': 'be',
+        'ボ': 'bo',
+        'パ': 'pa',
+        'ピ': 'pi',
+        'プ': 'pu',
+        'ペ': 'pe',
+        'ポ': 'po',
+        'マ': 'ma',
+        'ミ': 'mi',
+        'ム': 'mu',
+        'メ': 'me',
+        'モ': 'mo',
+        'キャ': 'kya',
+        'キュ': 'kyu',
+        'キョ': 'kyo',
+        'シャ': 'sha',
+        'シュ': 'shu',
+        'ショ': 'sho',
+        'チャ': 'cha',
+        'チュ': 'chu',
+        'チョ': 'cho',
+        'ニャ': 'nya',
+        'ニュ': 'nyu',
+        'ニョ': 'nyo',
+        'ヒャ': 'hya',
+        'ヒュ': 'hyu',
+        'ヒョ': 'hyo',
+        'ミャ': 'mya',
+        'ミュ': 'myu',
+        'ミョ': 'myo',
+        'リャ': 'rya',
+        'リュ': 'ryu',
+        'リョ': 'ryo',
+        'ギャ': 'gya',
+        'ギュ': 'gyu',
+        'ギョ': 'gyo',
+        'ジャ': 'ja',
+        'ジュ': 'ju',
+        'ジョ': 'jo',
+        'ビャ': 'bya',
+        'ビュ': 'byu',
+        'ビョ': 'byo',
+        'ピャ': 'pya',
+        'ピュ': 'pyu',
+        'ピョ': 'pyo',
+        'ヤ': 'ya',
+        'ユ': 'yu',
+        'ヨ': 'yo',
+        'ラ': 'ra',
+        'リ': 'ri',
+        'ル': 'ru',
+        'レ': 're',
+        'ロ': 'ro',
+        'ワ': 'wa',
+        'ン': 'n',
+      },
+      'hiragana': {
+      }
+    }
+
+    const INTERVAL = 400;
+
+    class Option {
+      constructor({ text }) {
+        this.text = text;
+      }
+
+      get div() {
+        let div = document.createElement('div');
+        div.className = 'option';
+        div.innerHTML = this.text;
+        return div;
+      }
+    }
+
+    class App {
+      constructor() {
+        this.selectedAlphabet = null;
+        this.wrongAnswerEmoji = ['🤬','🥶', '😡', '🤡', '💩', '🤢', '💀', '👽', '🔒'];
+        this.correctAnswerEmoji = ['😀', '😁', '🥳', '🤩', '😊', '🤗', '😎', '😍', '😸', '🍣', '㊗️'];
+        this.alphabets = document.querySelectorAll('input[name="alphabet"]');
+        this.jpDiv = document.querySelector('#jp');
+        this.startDiv = document.querySelector('#start');
+        this.startButton = document.querySelector('#start #button');
+        this.contentDiv = document.querySelector('#content');
+        this.optionsDiv = document.querySelector('#options');
+        this.noteDiv = document.querySelector('#note');
+        this.cardCount = 0;
+
+        this.#init();
+      }
+
+      get randomWrongEmoji() {
+        return this.#getRandomElement(this.wrongAnswerEmoji);
+      }
+
+      get randomCorrectEmoji() {
+        return this.#getRandomElement(this.correctAnswerEmoji);
+      }
+
+      get currentAlphabet() {
+        return ALPHABETS[this.selectedAlphabet];
+      }
+
+      correctAnswer() {
+        this.noteDiv.innerHTML = this.randomCorrectEmoji;
+
+        setTimeout(function() {
+          this.prompt();
+        }.bind(this), INTERVAL)
+      }
+
+      incorrectAnswer() {
+        this.noteDiv.innerHTML = this.randomWrongEmoji;
+      }
+
+      prompt() {
+        this.#clear();
+
+        let keys = Object.keys(this.currentAlphabet);
+        this.character = this.#getRandomElement(keys);
+        this.jpDiv.innerHTML = this.character;
+        this.answer = this.currentAlphabet[this.character];
+
+        let options = this.#shuffle(this.#buildOptions(this.answer));
+
+        for (let i = 0; i < options.length; i++) {
+          let o = options[i];
+          this.optionsDiv.appendChild(o);
+          o.addEventListener('click', function(e) {
+            if (this.answer === e.target.innerHTML) {
+              this.correctAnswer();
+            } else {
+              this.incorrectAnswer();
+            }
+          }.bind(this));
+        }
+      }
+
+      #init() {
+        this.startButton.addEventListener('click', function(_e) {
+          for (let i = 0; i < this.alphabets.length; i++) {
+            if (this.alphabets[i].checked) {
+              this.selectedAlphabet = this.alphabets[i].value;
+            }
+          }
+
+          this.startDiv.style.display = 'none';
+          this.contentDiv.style.display = 'block';
+          this.prompt();
+        }.bind(this));
+      }
+
+      #getRandomElement(items) {
+        return items[Math.floor(Math.random() * items.length)];
+      }
+
+      #fetchCharacter(array) {
+        let char = this.#getRandomElement(Object.values(this.currentAlphabet));
+        if (array.includes(char)) {
+          return this.#fetchCharacter(array)
+        } else {
+          return char;
+        }
+      }
+
+      #buildOptions(answer) {
+        let answers = [answer];
+        for (let i = 0; i < 3; i++) {
+          let char = this.#fetchCharacter(answers);
+          answers.push(char);
+        }
+
+        let options = answers.map(a => new Option({ text: a }).div);
+
+        return options;
+      }
+
+      // https://stackoverflow.com/a/2450976/20299436
+      #shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+
+        // While there remain elements to shuffle.
+        while (currentIndex != 0) {
+
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+
+        return array;
+      }
+
+      #clear() {
+        this.optionsDiv.innerHTML = '';
+        this.noteDiv.innerHTML = '';
+      }
+    }
+
+    const app = new App();
+
+  </script>
+
+</html>
