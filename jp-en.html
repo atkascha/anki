@@ -5,83 +5,7 @@
     <meta http-equiv="Content-Language" content="en">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Simple JP/EN flashcards</title>
-    <style>
-
-      html,
-      body {
-        background-color: #EEE;
-        font-family: monospace;
-        margin: 0;
-        padding: 0;
-      }
-
-      input,
-      button {
-        font-family: monospace;
-      }
-
-      #app {
-        margin: auto;
-        height: 100vh;
-        width: 50vw;
-          min-width: 320px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      #start {
-        /* display: none; */
-        font-size: 24px;
-      }
-
-      #start #button {
-        font-size: 24px;
-      }
-
-      #content {
-        /* display: none; */
-      }
-
-      #content #jp {
-        font-size: 48px;
-        margin: 0px 0px 5px 0px;
-        text-align: center;
-        width: 100%;
-      }
-
-      #content #next {
-        display: none;
-        margin-top: 5px;
-      }
-
-      #content #note {
-        margin-top: 10px;
-        font-size: 36px;
-        text-align: center;
-      }
-
-      #options {
-        display: flex;
-        justify-content: space-evenly;
-        width: 100%;
-      }
-
-      .option {
-        border: 1px solid #000;
-        font-size: 22px;
-        text-align: center;
-        padding: 5px 0px;
-        margin: 5px;
-        width: 80px;
-      }
-
-      .option:hover {
-        background-color: grey;
-        cursor: pointer;
-      }
-
-    </style>
+    <link rel="stylesheet" href="./style.css">
   </head>
   <body>
 
@@ -108,6 +32,7 @@
         <div id="options"></div>
         <div id="note"></div>
         <button id="next">next</button>
+        <div id="score"></div>
       </div>
     </div>
 
@@ -252,7 +177,8 @@
         this.contentDiv = document.querySelector('#content');
         this.optionsDiv = document.querySelector('#options');
         this.noteDiv = document.querySelector('#note');
-        this.cardCount = 0;
+        this.scoreDiv = document.querySelector('#score');
+        this.score = 0;
 
         this.#init();
       }
@@ -271,6 +197,9 @@
 
       correctAnswer() {
         this.noteDiv.innerHTML = this.randomCorrectEmoji;
+        this.score++;
+
+        this.scoreDiv.innerText = `🔥 ${this.score}`
 
         setTimeout(function() {
           this.prompt();
@@ -279,6 +208,8 @@
 
       incorrectAnswer() {
         this.noteDiv.innerHTML = this.randomWrongEmoji;
+        this.score = 0;
+        this.scoreDiv.innerText = '';
       }
 
       prompt() {

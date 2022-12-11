@@ -1,0 +1,81 @@
+html,
+body {
+  background-color: #EEE;
+  font-family: monospace;
+  margin: 0;
+  padding: 0;
+}
+
+input,
+button {
+  font-family: monospace;
+}
+
+#app {
+  margin: auto;
+  height: 100vh;
+  width: 50vw;
+  min-width: 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#start {
+  /* display: none; */
+  font-size: 24px;
+}
+
+#start #button {
+  font-size: 24px;
+}
+
+#content {
+  /* display: none; */
+}
+
+#content #jp {
+  font-size: 48px;
+  margin: 0px 0px 5px 0px;
+  text-align: center;
+  width: 100%;
+}
+
+#content #next {
+  display: none;
+  margin-top: 5px;
+}
+
+#content #note {
+  margin-top: 10px;
+  font-size: 36px;
+  text-align: center;
+}
+
+#options {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.option {
+  border: 1px solid #000;
+  font-size: 22px;
+  text-align: center;
+  padding: 5px 0px;
+  margin: 5px;
+  width: 80px;
+}
+
+.option:hover {
+  background-color: grey;
+  cursor: pointer;
+}
+
+#score {
+  font-size: 24px;
+  position: fixed;
+    bottom: 10px;
+  text-align: center;
+  width: 100%;
+}
